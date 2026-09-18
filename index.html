@@ -52,26 +52,6 @@
   .empty{color:var(--sub);font-size:13.5px;border:1px dashed var(--line);border-radius:8px;padding:18px;}
   footer{border-top:1px solid var(--line);padding-top:24px;color:var(--sub);font-size:13px;}
   a{color:var(--accent2);}
-
-  #chatBtn{position:fixed;bottom:22px;right:22px;width:54px;height:54px;border-radius:50%;
-    background:var(--accent);color:#171205;border:none;cursor:pointer;font-size:22px;
-    box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:50;}
-  #chatPanel{position:fixed;bottom:88px;right:22px;width:320px;max-width:88vw;max-height:60vh;
-    background:var(--panel);border:1px solid var(--line);border-radius:12px;display:none;
-    flex-direction:column;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:50;}
-  #chatPanel.open{display:flex;}
-  #chatHead{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600;
-    display:flex;justify-content:space-between;align-items:center;}
-  #chatHead span.dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);display:inline-block;margin-right:6px;}
-  #chatClose{background:none;border:none;color:var(--sub);cursor:pointer;font-size:16px;}
-  #chatMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;}
-  .msg{max-width:85%;padding:8px 11px;border-radius:9px;line-height:1.45;}
-  .msg.bot{background:var(--bg);border:1px solid var(--line);align-self:flex-start;}
-  .msg.user{background:var(--accent);color:#171205;align-self:flex-end;}
-  #chatForm{display:flex;border-top:1px solid var(--line);}
-  #chatInput{flex:1;border:none;background:transparent;color:var(--ink);padding:11px 12px;font-size:13.5px;outline:none;}
-  #chatSend{border:none;background:transparent;color:var(--accent2);font-weight:600;padding:0 14px;cursor:pointer;font-size:13.5px;}
-  #chatNote{font-size:11px;color:var(--sub);padding:6px 14px 10px;}
 </style>
 </head>
 <body>
@@ -118,95 +98,33 @@
     <div class="empty">No reviews yet — this section fills in as clients share feedback. Ask a happy client for a line or two after their first project.</div>
   </section>
 
+  <section id="contact">
+    <h2>CONTACT</h2>
+    <div class="svc">
+      <h3 style="margin-bottom:10px;">Ready to talk?</h3>
+      <p style="margin-bottom:16px;">Send your data, or just your questions — I usually reply within a day.</p>
+      <div class="btnrow" style="margin-bottom:8px;">
+        <a class="btn primary" href="mailto:owethutheboss@gmail.com?subject=Data%20project%20inquiry&body=Hi%2C%20I'd%20like%20to%20talk%20about...">Email me</a>
+        <button id="copyEmailBtn" class="btn ghost" style="cursor:pointer;">Copy email address</button>
+      </div>
+      <p id="copiedNote" style="display:none;color:var(--accent2);font-size:13px;margin:6px 0 0;">Copied — owethutheboss@gmail.com</p>
+      <p style="font-size:13px;color:var(--sub);margin:10px 0 0;">Prefer to type it yourself? <strong>owethutheboss@gmail.com</strong></p>
+    </div>
+  </section>
+
   <footer>
     Based worldwide, working remotely · Payments via Wise / Payoneer · <a href="mailto:owethutheboss@gmail.com">owethutheboss@gmail.com</a>
   </footer>
 </div>
 
-<button id="chatBtn" aria-label="Chat with NUMO">💬</button>
-<div id="chatPanel">
-  <div id="chatHead"><span><span class="dot"></span>Ask NUMO</span><button id="chatClose">✕</button></div>
-  <div id="chatMsgs"></div>
-  <p id="chatNote" style="display:none;">Chat isn't available in this view — email owethutheboss@gmail.com instead.</p>
-  <form id="chatForm">
-    <input id="chatInput" placeholder="Ask about pricing, services..." autocomplete="off">
-    <button id="chatSend" type="submit">Send</button>
-  </form>
-</div>
-
 <script>
-const SITE_CONTEXT = `You are the assistant embedded on NUMO's website. NUMO is a freelance data analytics service run by a data science student, contact email owethutheboss@gmail.com.
-Services: sales dashboards, simple forecasting, monthly reporting for small and mid-size businesses.
-Pricing: $100-$150 per one-off project, final price depends on scope (amount of data, number of questions, delivery format). Ongoing monthly reporting is quoted separately.
-Process: client sends a data export (spreadsheet/CSV), NUMO builds a visual dashboard delivered within a few days, with plain-language findings, not just charts.
-NUMO name meaning: "Numbers, Understood. Mapped to Outcomes."
-Works with businesses worldwide, remote, payments via Wise or Payoneer.
-Keep answers short (2-4 sentences), friendly, and professional. If asked something you don't know (e.g. availability, custom scope details), suggest emailing owethutheboss@gmail.com. Never invent pricing outside the $100-$150 range or make promises about timelines beyond "a few days" for one-off dashboards.`;
-
-let sampleFn = null;
-let history = []; // {role, content}
-document.getElementById('chatNote').style.display = 'block';
-
-function addMsg(role, text){
-  const el = document.createElement('div');
-  el.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
-  el.textContent = text;
-  document.getElementById('chatMsgs').appendChild(el);
-  document.getElementById('chatMsgs').scrollTop = 999999;
-  return el;
-}
-
-document.getElementById('chatBtn').addEventListener('click', () => {
-  document.getElementById('chatPanel').classList.add('open');
-  if(history.length === 0){
-    addMsg('bot', "Hi — I'm NUMO's assistant. Ask me about pricing, how the process works, or what's included.");
-  }
+document.getElementById('copyEmailBtn')?.addEventListener('click', () => {
+  navigator.clipboard.writeText('owethutheboss@gmail.com').then(() => {
+    document.getElementById('copiedNote').style.display = 'block';
+    setTimeout(() => { document.getElementById('copiedNote').style.display = 'none'; }, 2000);
+  });
 });
-document.getElementById('chatClose').addEventListener('click', () => {
-  document.getElementById('chatPanel').classList.remove('open');
-});
-
-document.getElementById('chatForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if(!text) return;
-  input.value = '';
-  addMsg('user', text);
-  history.push({role:'user', content:text});
-
-  if(!sampleFn){
-    document.getElementById('chatNote').style.display = 'block';
-    addMsg('bot', "Chat isn't available right now — email owethutheboss@gmail.com and I'll get back to you.");
-    return;
-  }
-
-  const botEl = addMsg('bot', 'Thinking…');
-  try{
-    const turns = [
-      {role:'user', content: SITE_CONTEXT},
-      {role:'assistant', content: "Understood — I'll answer as NUMO's site assistant, briefly and accurately."},
-      ...history
-    ];
-    const res = await sampleFn(turns, {
-      onText: ({text}) => { botEl.textContent = text; document.getElementById('chatMsgs').scrollTop = 999999; }
-    });
-    botEl.textContent = res.text;
-    history.push({role:'assistant', content: res.text});
-  }catch(err){
-    botEl.textContent = "Sorry, something went wrong — email owethutheboss@gmail.com instead.";
-  }
-});
-
-(async () => {
-  try{
-    if(typeof claude === 'undefined' || !claude.use){ return; }
-    sampleFn = await claude.use('sample');
-    if(sampleFn) document.getElementById('chatNote').style.display = 'none';
-  }catch(e){
-    // no-op: fallback note already shown
-  }
-})();
 </script>
 </body>
 </html>
+
