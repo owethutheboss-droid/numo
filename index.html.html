@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUMO — Data Analytics</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#161b2c; --ink:#f0f1f6; --sub:#9aa0b4;
+    --line:#262d45; --accent:#f2a444; --accent2:#5cc2a5;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f2; --panel:#ffffff; --ink:#14161f; --sub:#5c6072;
+    --line:#e3e1da; --accent:#c9781f; --accent2:#2f8f6f;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f7f6f2; --panel:#ffffff; --ink:#14161f; --sub:#5c6072;
+      --line:#e3e1da; --accent:#c9781f; --accent2:#2f8f6f;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:64px 20px 80px;}
+  .logo{display:flex;align-items:baseline;gap:14px;margin:0 0 6px;flex-wrap:wrap;}
+  .logo .word{font-family:'SF Mono',Consolas,monospace;font-size:44px;font-weight:700;letter-spacing:0.02em;color:var(--ink);}
+  .logo .word span{color:var(--accent);}
+  .logo .meaning{font-size:12.5px;color:var(--sub);letter-spacing:0.04em;}
+  h1{font-size:clamp(28px,4.6vw,38px);font-weight:650;letter-spacing:-0.015em;margin:20px 0 14px;max-width:16ch;}
+  .tag{color:var(--sub);font-size:16px;max-width:46ch;margin:0 0 34px;}
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:64px;}
+  .btn{display:inline-block;padding:11px 20px;border-radius:8px;font-size:14.5px;font-weight:600;text-decoration:none;}
+  .btn.primary{background:var(--accent);color:#171205;}
+  .btn.ghost{border:1px solid var(--line);color:var(--ink);}
+  section{margin-bottom:56px;}
+  h2{font-size:13px;color:var(--sub);font-weight:600;margin:0 0 20px;}
+  .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+  .svc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .svc h3{font-size:15.5px;margin:0 0 6px;}
+  .svc p{font-size:13.5px;color:var(--sub);margin:0;}
+  .steps{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);}
+  .step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);}
+  .step .n{font-family:'SF Mono',Consolas,monospace;color:var(--accent2);font-size:13px;width:20px;flex-shrink:0;}
+  .step h3{font-size:15px;margin:0 0 3px;}
+  .step p{font-size:13.5px;color:var(--sub);margin:0;}
+  .quote{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent2);border-radius:8px;padding:16px 18px;font-size:14.5px;margin-bottom:12px;}
+  .quote .who{color:var(--sub);font-size:12.5px;margin-top:8px;}
+  .empty{color:var(--sub);font-size:13.5px;border:1px dashed var(--line);border-radius:8px;padding:18px;}
+  footer{border-top:1px solid var(--line);padding-top:24px;color:var(--sub);font-size:13px;}
+  a{color:var(--accent2);}
+
+  #chatBtn{position:fixed;bottom:22px;right:22px;width:54px;height:54px;border-radius:50%;
+    background:var(--accent);color:#171205;border:none;cursor:pointer;font-size:22px;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:50;}
+  #chatPanel{position:fixed;bottom:88px;right:22px;width:320px;max-width:88vw;max-height:60vh;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;display:none;
+    flex-direction:column;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:50;}
+  #chatPanel.open{display:flex;}
+  #chatHead{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600;
+    display:flex;justify-content:space-between;align-items:center;}
+  #chatHead span.dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);display:inline-block;margin-right:6px;}
+  #chatClose{background:none;border:none;color:var(--sub);cursor:pointer;font-size:16px;}
+  #chatMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;}
+  .msg{max-width:85%;padding:8px 11px;border-radius:9px;line-height:1.45;}
+  .msg.bot{background:var(--bg);border:1px solid var(--line);align-self:flex-start;}
+  .msg.user{background:var(--accent);color:#171205;align-self:flex-end;}
+  #chatForm{display:flex;border-top:1px solid var(--line);}
+  #chatInput{flex:1;border:none;background:transparent;color:var(--ink);padding:11px 12px;font-size:13.5px;outline:none;}
+  #chatSend{border:none;background:transparent;color:var(--accent2);font-weight:600;padding:0 14px;cursor:pointer;font-size:13.5px;}
+  #chatNote{font-size:11px;color:var(--sub);padding:6px 14px 10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <span class="word">NU<span>M</span>O</span>
+    <span class="meaning">Numbers, Understood. Mapped to Outcomes.</span>
+  </div>
+  <h1>I turn your business data into decisions you can act on this week.</h1>
+  <p class="tag">Sales dashboards, trend analysis and simple forecasts for small and mid-size businesses — built by a data science specialist, delivered in days.</p>
+  <div class="btnrow">
+    <a class="btn primary" href="mailto:owethutheboss@gmail.com?subject=Data%20project%20inquiry&body=Hi%2C%20I'd%20like%20to%20talk%20about..." >Get a free data audit</a>
+    <a class="btn ghost" href="https://claude.ai/artifact/1SrEjsC2npitRJAXZxQyoh" target="_blank">See sample dashboard</a>
+  </div>
+
+  <section>
+    <h2>SERVICES</h2>
+    <div class="services">
+      <div class="svc"><h3>Sales dashboard</h3><p>Your best sellers, slow periods, and trends in one clear view.</p></div>
+      <div class="svc"><h3>Simple forecasting</h3><p>A grounded 1–3 month projection based on your real history.</p></div>
+      <div class="svc"><h3>Monthly reporting</h3><p>An ongoing snapshot delivered on a schedule, so nothing gets missed.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>HOW IT WORKS</h2>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><div><h3>Send your data</h3><p>Any spreadsheet or export — sales, bookings, customers.</p></div></div>
+      <div class="step"><span class="n">02</span><div><h3>I build the report</h3><p>Delivered as a clear, visual dashboard within a few days.</p></div></div>
+      <div class="step"><span class="n">03</span><div><h3>You get the findings</h3><p>Plain-language takeaways, not just charts.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>PRICING</h2>
+    <div class="svc" style="max-width:420px;">
+      <h3 style="font-size:22px;margin-bottom:8px;">$100 – $150<span style="font-size:13px;color:var(--sub);font-weight:500;"> / project</span></h3>
+      <p>Every business's data is different, so the final price depends on the scope — how much data there is, how many questions you need answered, and how the report gets delivered. Most one-off dashboards land in this range; ongoing monthly reporting is quoted separately.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>WHAT CLIENTS SAY</h2>
+    <div class="empty">No reviews yet — this section fills in as clients share feedback. Ask a happy client for a line or two after their first project.</div>
+  </section>
+
+  <footer>
+    Based worldwide, working remotely · Payments via Wise / Payoneer · <a href="mailto:owethutheboss@gmail.com">owethutheboss@gmail.com</a>
+  </footer>
+</div>
+
+<button id="chatBtn" aria-label="Chat with NUMO">💬</button>
+<div id="chatPanel">
+  <div id="chatHead"><span><span class="dot"></span>Ask NUMO</span><button id="chatClose">✕</button></div>
+  <div id="chatMsgs"></div>
+  <p id="chatNote" style="display:none;">Chat isn't available in this view — email owethutheboss@gmail.com instead.</p>
+  <form id="chatForm">
+    <input id="chatInput" placeholder="Ask about pricing, services..." autocomplete="off">
+    <button id="chatSend" type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+const SITE_CONTEXT = `You are the assistant embedded on NUMO's website. NUMO is a freelance data analytics service run by a data science student, contact email owethutheboss@gmail.com.
+Services: sales dashboards, simple forecasting, monthly reporting for small and mid-size businesses.
+Pricing: $100-$150 per one-off project, final price depends on scope (amount of data, number of questions, delivery format). Ongoing monthly reporting is quoted separately.
+Process: client sends a data export (spreadsheet/CSV), NUMO builds a visual dashboard delivered within a few days, with plain-language findings, not just charts.
+NUMO name meaning: "Numbers, Understood. Mapped to Outcomes."
+Works with businesses worldwide, remote, payments via Wise or Payoneer.
+Keep answers short (2-4 sentences), friendly, and professional. If asked something you don't know (e.g. availability, custom scope details), suggest emailing owethutheboss@gmail.com. Never invent pricing outside the $100-$150 range or make promises about timelines beyond "a few days" for one-off dashboards.`;
+
+let sampleFn = null;
+let history = []; // {role, content}
+document.getElementById('chatNote').style.display = 'block';
+
+function addMsg(role, text){
+  const el = document.createElement('div');
+  el.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+  el.textContent = text;
+  document.getElementById('chatMsgs').appendChild(el);
+  document.getElementById('chatMsgs').scrollTop = 999999;
+  return el;
+}
+
+document.getElementById('chatBtn').addEventListener('click', () => {
+  document.getElementById('chatPanel').classList.add('open');
+  if(history.length === 0){
+    addMsg('bot', "Hi — I'm NUMO's assistant. Ask me about pricing, how the process works, or what's included.");
+  }
+});
+document.getElementById('chatClose').addEventListener('click', () => {
+  document.getElementById('chatPanel').classList.remove('open');
+});
+
+document.getElementById('chatForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  addMsg('user', text);
+  history.push({role:'user', content:text});
+
+  if(!sampleFn){
+    document.getElementById('chatNote').style.display = 'block';
+    addMsg('bot', "Chat isn't available right now — email owethutheboss@gmail.com and I'll get back to you.");
+    return;
+  }
+
+  const botEl = addMsg('bot', 'Thinking…');
+  try{
+    const turns = [
+      {role:'user', content: SITE_CONTEXT},
+      {role:'assistant', content: "Understood — I'll answer as NUMO's site assistant, briefly and accurately."},
+      ...history
+    ];
+    const res = await sampleFn(turns, {
+      onText: ({text}) => { botEl.textContent = text; document.getElementById('chatMsgs').scrollTop = 999999; }
+    });
+    botEl.textContent = res.text;
+    history.push({role:'assistant', content: res.text});
+  }catch(err){
+    botEl.textContent = "Sorry, something went wrong — email owethutheboss@gmail.com instead.";
+  }
+});
+
+(async () => {
+  try{
+    if(typeof claude === 'undefined' || !claude.use){ return; }
+    sampleFn = await claude.use('sample');
+    if(sampleFn) document.getElementById('chatNote').style.display = 'none';
+  }catch(e){
+    // no-op: fallback note already shown
+  }
+})();
+</script>
+</body>
+</html>
